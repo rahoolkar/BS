@@ -6,7 +6,7 @@ const main = require("./utils/database");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
 const authRouter = require("./routes/auth");
-const { default: userRouter } = require("./routes/user");
+const userRouter = require("./routes/user");
 const port = 8000;
 
 app.use(

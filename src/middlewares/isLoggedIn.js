@@ -1,33 +1,31 @@
 const jwt = require("jsonwebtoken");
 
-async function isLoggedIn(req, res, next) {
+const isLoggedIn = (req, res, next) => {
   try {
-    const { token } = req.cookies;
+    console.log("COOKIES:", req.cookies);
+
+    const token = req.cookies.token;
 
     if (!token) {
-      throw new Error("You are not valid user");
+      return res.status(401).json({
+        message: "Authentication required",
+      });
     }
-
+    
     const decoded = jwt.verify(token, process.env.SECRET_STRING);
 
-    if (!decoded) {
-      throw new Error("User does not have a valid token");
-    }
+    console.log("DECODED TOKEN:", decoded);
 
-    const user = await User.findById(decoded._id);
-
-    if (!user) {
-      throw new Error("Token is not valid. Please try again.");
-    }
-
-    req.user = user;
+    req.user = decoded;
 
     next();
   } catch (error) {
-    res.status(500).json({
+    console.error("AUTH ERROR:", error);
+
+    return res.status(401).json({
       message: error.message,
     });
   }
-}
+};
 
 module.exports = isLoggedIn;
